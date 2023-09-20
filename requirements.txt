@@ -4,4 +4,4 @@ Flask-Caching
 multiset
 Unidecode
 pandas
-psycopg2
+psycopg2-binary
