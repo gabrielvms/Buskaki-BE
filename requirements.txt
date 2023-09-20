@@ -1,1 +1,7 @@
-Flask==2.3.3
+Flask
+Flask-Cors
+Flask-Caching
+multiset
+Unidecode
+pandas
+psycopg2
