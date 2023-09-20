@@ -46,6 +46,23 @@ def companies_cnpj(cnpj):
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
 
+@app.route("/companies/bairro/<bairro>")
+def companies_bairro(bairro):
+    data = cache.get("companies")
+    if data == None:
+        data = companies()
+
+    df = pd.DataFrame.from_dict(data)
+    bairro_set = Multiset(bairro)
+    
+    exact = df[df["bairro"] == bairro]
+    if(not exact.empty):
+        return exact.to_dict('records')
+
+    df['precision'] = df['bairro'].apply(lambda row: len(bairro_set.intersection(Multiset(row))))
+    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
+    return result
+
 @app.route("/companies/razao_social/<bairro>/<company>")
 def companies_razao_social(bairro, company):
     data = cache.get("companies")
@@ -107,44 +124,44 @@ def companies_endereco(bairro, tipo_logradouro, logradouro):
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
 
-@app.route("/companies/avancada/nome_fantasia/<bairro>/<tipo_logradouro>/<logradouro>/<company>")
-def companies_avancado_nome_fantasia(bairro, tipo_logradouro, logradouro, company):
-    data = cache.get("companies")
-    if data == None:
-        data = companies()
+# @app.route("/companies/avancada/nome_fantasia/<bairro>/<tipo_logradouro>/<logradouro>/<company>")
+# def companies_avancado_nome_fantasia(bairro, tipo_logradouro, logradouro, company):
+#     data = cache.get("companies")
+#     if data == None:
+#         data = companies()
 
-    df = pd.DataFrame.from_dict(data)
-    df = df[(df["bairro"] == unidecode(bairro.upper())) & (df["tipo_logradouro"] == tipo_logradouro.upper())]
-    df = df.dropna(subset=["logradouro", "nome_fantasia"])
-    logradouro = unidecode(logradouro)
-    company = unidecode(company)
+#     df = pd.DataFrame.from_dict(data)
+#     df = df[(df["bairro"] == unidecode(bairro.upper())) & (df["tipo_logradouro"] == tipo_logradouro.upper())]
+#     df = df.dropna(subset=["logradouro", "nome_fantasia"])
+#     logradouro = unidecode(logradouro)
+#     company = unidecode(company)
 
-    exact = df[df["logradouro"] == logradouro.upper()]
-    if(not exact.empty):
-        return exact.to_dict('records')
+#     exact = df[df["logradouro"] == logradouro.upper()]
+#     if(not exact.empty):
+#         return exact.to_dict('records')
 
-    df['precision'] = df['logradouro'].apply(lambda row: fc.jaccard_similarity(row if row != None else "", logradouro) + fc.dice_coefficient(row if row != None else "", logradouro))
-    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
-    return result
+#     df['precision'] = df['logradouro'].apply(lambda row: fc.jaccard_similarity(row if row != None else "", logradouro) + fc.dice_coefficient(row if row != None else "", logradouro))
+#     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
+#     return result
 
-@app.route("/companies/avancada/razao_social/<bairro>/<tipo_logradouro>/<logradouro>/<company>")
-def companies_avancado_nome_fantasia(bairro, tipo_logradouro, logradouro, company):
-    data = cache.get("companies")
-    if data == None:
-        data = companies()
+# @app.route("/companies/avancada/razao_social/<bairro>/<tipo_logradouro>/<logradouro>/<company>")
+# def companies_avancado_razao_social(bairro, tipo_logradouro, logradouro, company):
+#     data = cache.get("companies")
+#     if data == None:
+#         data = companies()
 
-    df = pd.DataFrame.from_dict(data)
-    df = df[(df["bairro"] == unidecode(bairro.upper())) & (df["tipo_logradouro"] == tipo_logradouro.upper())]
-    df = df.dropna(subset=["logradouro", "razao_social"])
-    logradouro = unidecode(logradouro)
-    company = unidecode(company)
+#     df = pd.DataFrame.from_dict(data)
+#     df = df[(df["bairro"] == unidecode(bairro.upper())) & (df["tipo_logradouro"] == tipo_logradouro.upper())]
+#     df = df.dropna(subset=["logradouro", "razao_social"])
+#     logradouro = unidecode(logradouro)
+#     company = unidecode(company)
 
-    exact = df[df["logradouro"] == logradouro.upper()]
-    if(not exact.empty):
-        return exact.to_dict('records')
+#     exact = df[df["logradouro"] == logradouro.upper()]
+#     if(not exact.empty):
+#         return exact.to_dict('records')
 
-    df['precision'] = df['logradouro'].apply(lambda row: fc.jaccard_similarity(row if row != None else "", logradouro) + fc.dice_coefficient(row if row != None else "", logradouro))
-    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
-    return result
+#     df['precision'] = df['logradouro'].apply(lambda row: fc.jaccard_similarity(row if row != None else "", logradouro) + fc.dice_coefficient(row if row != None else "", logradouro))
+#     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
+#     return result
 
 app.run(host="localhost", port=5001)    
