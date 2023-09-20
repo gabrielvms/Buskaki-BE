@@ -3,7 +3,7 @@ from psycopg2 import Error
 import json
 
 # Read database connection information and create a dictionary from it
-with open("db_info.json", 'r') as db_info_file:
+with open("../db_info.json", 'r') as db_info_file:
     db_info = json.load(db_info_file)
 
 # Open a database connection
