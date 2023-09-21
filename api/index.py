@@ -5,9 +5,9 @@ from multiset import Multiset
 from unidecode import unidecode
 import pandas as pd
 import sys
-sys.path.append('helpers')
-from helpers.db_functions import *
-from helpers.functions import *
+sys.path.append('api/helpers')
+from db_functions import *
+from functions import *
 
 
 config = {
