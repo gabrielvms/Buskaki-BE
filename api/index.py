@@ -3,8 +3,8 @@ from flask_cors import CORS
 from flask_caching import Cache
 from multiset import Multiset
 from unidecode import unidecode
-import db_functions as dbf
-import functions as fc
+from db_functions import *
+from functions import *
 import pandas as pd
 
 config = {
@@ -25,7 +25,7 @@ def default():
 @app.route("/companies")
 @cache.cached()
 def companies():
-    result = dbf.companies_read()
+    result = companies_read()
     cache.set("companies", result)
     return result
 
@@ -79,7 +79,7 @@ def companies_razao_social(bairro, company):
     if(not exact.empty):
         return exact.to_dict('records')
 
-    df['precision'] = df['razao_social'].apply(lambda row: fc.jaccard_similarity(row if row != None else "", company) + fc.dice_coefficient(row if row != None else "", company))
+    df['precision'] = df['razao_social'].apply(lambda row: jaccard_similarity(row if row != None else "", company) + dice_coefficient(row if row != None else "", company))
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
 
@@ -99,7 +99,7 @@ def companies_nome_fantasia(bairro, company):
     if(not exact.empty):
         return exact.to_dict('records')
 
-    df['precision'] = df['nome_fantasia'].apply(lambda row: fc.jaccard_similarity(row if row != None else "", company) + fc.dice_coefficient(row if row != None else "", company))
+    df['precision'] = df['nome_fantasia'].apply(lambda row: jaccard_similarity(row if row != None else "", company) + dice_coefficient(row if row != None else "", company))
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
 
@@ -120,7 +120,7 @@ def companies_endereco(bairro, tipo_logradouro, logradouro):
     if(not exact.empty):
         return exact.to_dict('records')
 
-    df['precision'] = df['logradouro'].apply(lambda row: fc.jaccard_similarity(row if row != None else "", logradouro) + fc.dice_coefficient(row if row != None else "", logradouro))
+    df['precision'] = df['logradouro'].apply(lambda row: jaccard_similarity(row if row != None else "", logradouro) + dice_coefficient(row if row != None else "", logradouro))
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
   
