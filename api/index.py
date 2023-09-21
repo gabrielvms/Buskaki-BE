@@ -3,9 +3,12 @@ from flask_cors import CORS
 from flask_caching import Cache
 from multiset import Multiset
 from unidecode import unidecode
+import pandas as pd
+import sys
+sys.path.append('helpers')
 from helpers.db_functions import *
 from helpers.functions import *
-import pandas as pd
+
 
 config = {
 
