@@ -3,8 +3,8 @@ from flask_cors import CORS
 from flask_caching import Cache
 from multiset import Multiset
 from unidecode import unidecode
-from db_functions import *
-from functions import *
+from helpers.db_functions import *
+from helpers.functions import *
 import pandas as pd
 
 config = {
@@ -123,4 +123,6 @@ def companies_endereco(bairro, tipo_logradouro, logradouro):
     df['precision'] = df['logradouro'].apply(lambda row: jaccard_similarity(row if row != None else "", logradouro) + dice_coefficient(row if row != None else "", logradouro))
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
+  
+
   
