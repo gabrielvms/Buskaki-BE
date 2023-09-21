@@ -4,7 +4,6 @@ from flask_cors import CORS
 from flask_caching import Cache
 from multiset import Multiset
 from unidecode import unidecode
-import functions as fc
 import pandas as pd
 
 config = {
@@ -21,3 +20,5 @@ cache = Cache(app)
 @app.route("/")
 def default():
     return os.environ.get('POSTGRES_URL')
+
+
