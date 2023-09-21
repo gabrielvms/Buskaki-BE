@@ -30,7 +30,7 @@ def close_connection(cursor, connection):
 
 def companies_read():
     con, cur = open_connection()
-    cur.execute("select * from buskaki_estabelecimentos")
+    cur.execute("select * from buskaki_empresas")
     column_names = [desc[0] for desc in cur.description]
     rows = cur.fetchall()
     companies =  [row_to_dict(row, column_names) for row in rows] 
