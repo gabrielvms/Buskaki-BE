@@ -1,4 +1,3 @@
-import os
 from flask import Flask, redirect, url_for
 from flask_cors import CORS
 from flask_caching import Cache
@@ -21,7 +20,7 @@ cache = Cache(app)
 
 @app.route("/")
 def default():
-    return os.environ.get('POSTGRES_URL')
+    return redirect(url_for("companies")) 
 
 @app.route("/companies")
 @cache.cached()

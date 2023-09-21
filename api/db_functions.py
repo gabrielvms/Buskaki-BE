@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2 import Error
 import json
+import os
 
 # Read database connection information and create a dictionary from it
 with open("db_info.json", 'r') as db_info_file:
@@ -11,11 +12,11 @@ def open_connection():
     con = None
     try:
         con = psycopg2.connect(
-            host=db_info["HOST"],
-            port=db_info["PORT"],
-            database=db_info["DATABASE"],
-            user=db_info["USER"],
-            password=db_info["PASSWORD"]
+            host=os.environ.get('POSTGRES_HOST'),
+            port=os.environ.get('POSTGRES_PORT'),
+            database=os.environ.get('POSTGRES_DATABASE'),
+            user=os.environ.get('POSTGRES_USER'),
+            password=os.environ.get('POSTGRES_PASSWORD')
         )
     except Error as e:
         print(e)
