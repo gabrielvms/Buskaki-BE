@@ -71,15 +71,9 @@ def companies_bairro(bairro):
         data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
-    bairro_set = Multiset(bairro)
     
-    exact = df[df["bairro"] == bairro]
-    if(not exact.empty):
-        return exact.to_dict('records')
-
-    df['precision'] = df['bairro'].apply(lambda row: len(bairro_set.intersection(Multiset(row))))
-    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
-    return result
+    exact = df[df["bairro"] == bairro.upper()]
+    return exact.to_dict('records')
 
 @app.route("/companies/razao_social/<bairro>/<company>")
 def companies_razao_social(bairro, company):
