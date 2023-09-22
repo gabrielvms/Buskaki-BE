@@ -23,7 +23,7 @@ cache = Cache(app)
 
 @app.route("/")
 def default():
-    return redirect(url_for("companies", page=1)) 
+    return "test"
 
 @app.route("/fetch")
 @cache.cached()
