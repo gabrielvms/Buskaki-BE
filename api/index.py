@@ -141,6 +141,3 @@ def companies_endereco(bairro, tipo_logradouro, logradouro):
     df['precision'] = df['logradouro'].apply(lambda row: jaccard_similarity(row if row != None else "", logradouro) + dice_coefficient(row if row != None else "", logradouro))
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
-  
-
-app.run(host="localhost", port=5001)
