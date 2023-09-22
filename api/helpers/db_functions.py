@@ -8,7 +8,7 @@ def open_connection():
     try:
         con = psycopg2.connect(
             host=os.environ.get('POSTGRES_HOST'),
-            port=os.environ.get('POSTGRES_PORT'),
+            port=5432,
             database=os.environ.get('POSTGRES_DATABASE'),
             user=os.environ.get('POSTGRES_USER'),
             password=os.environ.get('POSTGRES_PASSWORD')
