@@ -33,7 +33,7 @@ def fetch_companies():
     cache.set("companies", result)
     return result
 
-@app.route("/cnpj")
+@app.route("/cnpjs")
 def cnpjs(page):
     data = cache.get("companies")
     if data == None:
