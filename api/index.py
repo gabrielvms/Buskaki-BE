@@ -40,7 +40,8 @@ def cnpjs():
         data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
-    return df["cnpj"].to_dict("records")
+    result = df["cnpj"]
+    return result.to_dict("records")
 
 @app.route("/companies/<page>")
 def companies(page):
