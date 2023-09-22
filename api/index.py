@@ -24,7 +24,7 @@ cache = Cache(app)
 
 @app.route("/")
 def default():
-    return os.environ.get('POSTGRES_PORT')
+    return redirect(url_for("companies", page=1)) 
 
 @app.route("/fetch")
 @cache.cached()
