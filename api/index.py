@@ -1,3 +1,4 @@
+import os
 from flask import Flask, redirect, url_for
 from flask_cors import CORS
 from flask_caching import Cache
@@ -23,12 +24,14 @@ cache = Cache(app)
 
 @app.route("/")
 def default():
-    return "test"
+    return os.environ.get('POSTGRES_PORT')
 
 @app.route("/fetch")
 @cache.cached()
 def fetch_companies():
-    return os.environ.get('POSTGRES_PORT')
+    result = companies_read()
+    cache.set("companies", result)
+    return result
 
 @app.route("/companies/<page>")
 def companies(page):
