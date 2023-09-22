@@ -34,7 +34,7 @@ def fetch_companies():
     return result
 
 @app.route("/cnpjs")
-def cnpjs(page):
+def cnpjs():
     data = cache.get("companies")
     if data == None:
         data = fetch_companies()
