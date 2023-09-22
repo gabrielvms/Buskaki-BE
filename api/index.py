@@ -13,7 +13,7 @@ from functions import *
 config = {
 
     "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 86400
+    "CACHE_DEFAULT_TIMEOUT": 0
 }
 
 app = Flask(__name__, static_url_path="")
@@ -23,20 +23,34 @@ cache = Cache(app)
 
 @app.route("/")
 def default():
-    return redirect(url_for("companies")) 
+    return redirect(url_for("companies", page=1)) 
 
-@app.route("/companies")
+@app.route("/fetch")
 @cache.cached()
-def companies():
+def fetch_companies():
     result = companies_read()
     cache.set("companies", result)
     return result
+
+@app.route("/companies/<page>")
+def companies(page):
+    page = int(page)
+    data = cache.get("companies")
+    if data == None:
+        data = fetch_companies()
+
+    df = pd.DataFrame.from_dict(data)
+    start = 50*(page-1)
+    end = 50*page
+    dfRange = df.iloc[start:end]
+    return dfRange.to_dict("records")
+
 
 @app.route("/companies/cnpj/<cnpj>")
 def companies_cnpj(cnpj):
     data = cache.get("companies")
     if data == None:
-        data = companies()
+        data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
     cnpj_set = Multiset(cnpj)
@@ -53,7 +67,7 @@ def companies_cnpj(cnpj):
 def companies_bairro(bairro):
     data = cache.get("companies")
     if data == None:
-        data = companies()
+        data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
     bairro_set = Multiset(bairro)
@@ -70,7 +84,7 @@ def companies_bairro(bairro):
 def companies_razao_social(bairro, company):
     data = cache.get("companies")
     if data == None:
-        data = companies()
+        data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
     df = df[df["bairro"] == unidecode(bairro.upper())]
@@ -90,7 +104,7 @@ def companies_razao_social(bairro, company):
 def companies_nome_fantasia(bairro, company):
     data = cache.get("companies")
     if data == None:
-        data = companies()
+        data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
     df = df[df["bairro"] == unidecode(bairro.upper())]
@@ -110,7 +124,7 @@ def companies_nome_fantasia(bairro, company):
 def companies_endereco(bairro, tipo_logradouro, logradouro):
     data = cache.get("companies")
     if data == None:
-        data = companies()
+        data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
     df = df[df["bairro"] == unidecode(bairro.upper())]
@@ -128,4 +142,4 @@ def companies_endereco(bairro, tipo_logradouro, logradouro):
     return result
   
 
-  
+app.run(host="localhost", port=5001)
