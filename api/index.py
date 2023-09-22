@@ -145,4 +145,4 @@ def companies_endereco(bairro, tipo_logradouro, logradouro):
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
 
-app.run(host="localhost", port=5001)
+# app.run(host="localhost", port=5001)
