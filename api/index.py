@@ -28,9 +28,7 @@ def default():
 @app.route("/fetch")
 @cache.cached()
 def fetch_companies():
-    result = companies_read()
-    cache.set("companies", result)
-    return result
+    return os.environ.get('POSTGRES_PORT')
 
 @app.route("/companies/<page>")
 def companies(page):
