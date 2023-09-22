@@ -39,7 +39,8 @@ def cnpjs():
     if data == None:
         data = fetch_companies()
 
-    return data["cnpj"]
+    df = pd.DataFrame.from_dict(data)
+    return df["cnpj"].to_dict("records")
 
 @app.route("/companies/<page>")
 def companies(page):
