@@ -42,6 +42,16 @@ def cnpjs():
     df = pd.DataFrame.from_dict(data)
     return df["cnpj"].to_list()
 
+@app.route("/companies/advanced/<value>")
+def advanced(value):
+    data = cache.get("companies")
+    if data == None:
+        data = fetch_companies()
+
+    df = pd.DataFrame.from_dict(data)
+    df = df.loc[df == str(value).any(axis=1)]
+    return df["cnpj"].to_list()
+
 @app.route("/companies/<page>")
 def companies(page):
     page = int(page)
@@ -84,14 +94,14 @@ def companies_bairro(bairro):
     exact = df[df["bairro"] == bairro.upper()]
     return exact.to_dict('records')
 
-@app.route("/companies/razao_social/<bairro>/<company>")
-def companies_razao_social(bairro, company):
+@app.route("/companies/razao_social/<company>")
+def companies_razao_social(company):
     data = cache.get("companies")
     if data == None:
         data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
-    df = df[df["bairro"] == unidecode(bairro.upper())]
+    # df = df[df["bairro"] == unidecode(bairro.upper())]
     df = df.dropna(subset=["razao_social"])
     company = unidecode(company)
     
@@ -104,14 +114,14 @@ def companies_razao_social(bairro, company):
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
 
-@app.route("/companies/nome_fantasia/<bairro>/<company>")
-def companies_nome_fantasia(bairro, company):
+@app.route("/companies/nome_fantasia/<company>")
+def companies_nome_fantasia(company):
     data = cache.get("companies")
     if data == None:
         data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
-    df = df[df["bairro"] == unidecode(bairro.upper())]
+    # df = df[df["bairro"] == unidecode(bairro.upper())]
     df = df.dropna(subset=["nome_fantasia"])
     company = unidecode(company)
 
@@ -124,15 +134,15 @@ def companies_nome_fantasia(bairro, company):
     result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
     return result
 
-@app.route("/companies/endereco/<bairro>/<tipo_logradouro>/<logradouro>")
-def companies_endereco(bairro, tipo_logradouro, logradouro):
+@app.route("/companies/endereco/<logradouro>")
+def companies_endereco(logradouro):
     data = cache.get("companies")
     if data == None:
         data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
-    df = df[df["bairro"] == unidecode(bairro.upper())]
-    df = df[df["tipo_logradouro"] == tipo_logradouro.upper()]
+    # df = df[df["bairro"] == unidecode(bairro.upper())]
+    # df = df[df["tipo_logradouro"] == tipo_logradouro.upper()]
     df = df.dropna(subset=["logradouro"])
     logradouro = unidecode(logradouro)
 
