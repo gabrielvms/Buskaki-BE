@@ -49,7 +49,7 @@ def advanced(value):
         data = fetch_companies()
 
     df = pd.DataFrame.from_dict(data)
-    df = df.loc[df == str(value).any(axis=1)]
+    df = df.loc[(df == str(value)).any(axis=1)]
     return df.head(1000).to_dict('records')
 
 @app.route("/companies/<page>")
