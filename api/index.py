@@ -50,7 +50,7 @@ def advanced(value):
 
     df = pd.DataFrame.from_dict(data)
     df = df.loc[df == str(value).any(axis=1)]
-    return df["cnpj"].to_list()
+    return df.head(1000).to_dict('records')
 
 @app.route("/companies/<page>")
 def companies(page):
@@ -80,7 +80,7 @@ def companies_cnpj(cnpj):
         return exact.to_dict('records')
 
     df['precision'] = df['cnpj'].apply(lambda row: len(cnpj_set.intersection(Multiset(row))))
-    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
+    result = df.sort_values('precision', ascending=False).head(1000).to_dict('records')
     return result
 
 @app.route("/companies/bairro/<bairro>")
@@ -111,7 +111,7 @@ def companies_razao_social(company):
         return exact.to_dict('records')
 
     df['precision'] = df['razao_social'].apply(lambda row: jaccard_similarity(row if row != None else "", company) + dice_coefficient(row if row != None else "", company))
-    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
+    result = df.sort_values('precision', ascending=False).head(1000).to_dict('records')
     return result
 
 @app.route("/companies/nome_fantasia/<company>")
@@ -131,7 +131,7 @@ def companies_nome_fantasia(company):
         return exact.to_dict('records')
 
     df['precision'] = df['nome_fantasia'].apply(lambda row: jaccard_similarity(row if row != None else "", company) + dice_coefficient(row if row != None else "", company))
-    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
+    result = df.sort_values('precision', ascending=False).head(1000).to_dict('records')
     return result
 
 @app.route("/companies/endereco/<logradouro>")
@@ -152,7 +152,7 @@ def companies_endereco(logradouro):
         return exact.to_dict('records')
 
     df['precision'] = df['logradouro'].apply(lambda row: jaccard_similarity(row if row != None else "", logradouro) + dice_coefficient(row if row != None else "", logradouro))
-    result = df.sort_values('precision', ascending=False).head(100).to_dict('records')
+    result = df.sort_values('precision', ascending=False).head(1000).to_dict('records')
     return result
 
 # app.run(host="localhost", port=5001)
