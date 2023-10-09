@@ -29,8 +29,8 @@ def default():
 @app.route("/fetch")
 @cache.cached()
 def fetch_companies():
-    result = companies_read()
-    cache.set("companies", result)
+    result = pd.read_json('empresas.json.gz', compression='gzip')
+    cache.set("companies", result.to_dict())
     return result
 
 @app.route("/cnpjs")
@@ -48,9 +48,13 @@ def advanced(value):
     if data == None:
         data = fetch_companies()
 
+    value = unidecode(value)
     df = pd.DataFrame.from_dict(data)
-    df = df.loc[(df == str(value)).any(axis=1)]
-    return df.head(1000).to_dict('records')
+    result = df[df["nome_fantasia"].str.contains(str(value).upper())]
+    result = pd.concat([result, df[df["razao_social"].str.contains(str(value).upper())]])
+    result = pd.concat([result, df[df["logradouro"].str.contains(str(value).upper())]])
+    result = pd.concat([result, df[df["bairro"].str.contains(str(value).upper())]])
+    return result.head(1000).to_dict('records')
 
 @app.route("/companies/<page>")
 def companies(page):
@@ -155,4 +159,4 @@ def companies_endereco(logradouro):
     result = df.sort_values('precision', ascending=False).head(1000).to_dict('records')
     return result
 
-# app.run(host="localhost", port=5001)
+app.run(host="localhost", port=5001)
