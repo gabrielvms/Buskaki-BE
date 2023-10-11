@@ -54,7 +54,7 @@ def advanced(value):
     result = pd.concat([result, df[df["razao_social"].str.contains(str(value).upper())]])
     result = pd.concat([result, df[df["logradouro"].str.contains(str(value).upper())]])
     result = pd.concat([result, df[df["bairro"].str.contains(str(value).upper())]])
-    return result.head(1000).drop_duplicates().sort_values('nome_fantasia').to_dict('records')
+    return result.head(1000).drop_duplicates().to_dict('records')
 
 @app.route("/companies/cnpj/<cnpj>")
 def companies_cnpj(cnpj):
@@ -69,7 +69,7 @@ def companies_cnpj(cnpj):
 
     df['precision'] = df['cnpj'].apply(lambda row: len(cnpj_set.intersection(Multiset(row))))
     df = df.sort_values('precision', ascending=False).head(1000).drop('precision', axis=1)
-    result = pd.concat([contain, df]).drop_duplicates().sort_values('nome_fantasia').to_dict('records')
+    result = pd.concat([contain, df]).drop_duplicates().to_dict('records')
     return result
 
 @app.route("/companies/bairro/<bairro>")
@@ -81,7 +81,7 @@ def companies_bairro(bairro):
     df = pd.DataFrame.from_dict(data)
     
     exact = df[df["bairro"] == bairro.upper()]
-    return exact.sort_values('nome_fantasia').to_dict('records')
+    return exact.to_dict('records')
 
 @app.route("/companies/razao_social/<company>")
 def companies_razao_social(company):
@@ -99,7 +99,7 @@ def companies_razao_social(company):
 
     df['precision'] = df['razao_social'].apply(lambda row: jaccard_similarity(row if row != None else "", company) + dice_coefficient(row if row != None else "", company))
     df = df.sort_values('precision', ascending=False).head(1000)
-    result = pd.concat([contain, df]).drop_duplicates().sort_values('nome_fantasia').to_dict('records')
+    result = pd.concat([contain, df]).drop_duplicates().to_dict('records')
     return result
 
 @app.route("/companies/nome_fantasia/<company>")
@@ -117,7 +117,7 @@ def companies_nome_fantasia(company):
 
     df['precision'] = df['nome_fantasia'].apply(lambda row: jaccard_similarity(row if row != None else "", company) + dice_coefficient(row if row != None else "", company))
     df = df.sort_values('precision', ascending=False).head(1000).drop('precision', axis=1)
-    result = pd.concat([contain, df]).drop_duplicates().sort_values('nome_fantasia').to_dict('records')
+    result = pd.concat([contain, df]).drop_duplicates().to_dict('records')
     return result
 
 @app.route("/companies/endereco/<logradouro>")
@@ -137,7 +137,7 @@ def companies_endereco(logradouro):
 
     df['precision'] = df['logradouro'].apply(lambda row: jaccard_similarity(row if row != None else "", logradouro) + dice_coefficient(row if row != None else "", logradouro))
     df = df.sort_values('precision', ascending=False).head(1000).drop('precision', axis=1)
-    result = pd.concat([contain, df]).drop_duplicates().sort_values('nome_fantasia').to_dict('records')
+    result = pd.concat([contain, df]).drop_duplicates().to_dict('records')
     return result
 
 # app.run(host="localhost", port=5001)
