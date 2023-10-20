@@ -140,4 +140,4 @@ def companies_endereco(logradouro):
     result = pd.concat([contain, df]).drop_duplicates().to_dict('records')
     return result
 
-app.run(host="localhost", port=5001)
+#app.run(host="localhost", port=5001)
