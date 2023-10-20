@@ -1,5 +1,4 @@
-import os
-from flask import Flask, redirect, url_for
+from flask import Flask, request
 from flask_cors import CORS
 from flask_caching import Cache
 from multiset import Multiset
@@ -80,8 +79,20 @@ def companies_bairro(bairro):
 
     df = pd.DataFrame.from_dict(data)
     
-    exact = df[df["bairro"].str.strip() == bairro.upper().strip()]
-    return exact.head(1000).to_dict('records')
+    exact = df[df["bairro"] == bairro.upper()]
+    return exact.to_dict('records')
+
+@app.route("/companies/bairro")
+def companies_bairro():
+    bairro = request.args.get('bairro')
+    data = cache.get("companies")
+    if data == None:
+        data = fetch_companies()
+
+    df = pd.DataFrame.from_dict(data)
+    
+    exact = df[df["bairro"] == bairro.upper()]
+    return exact.to_dict('records')
 
 @app.route("/companies/razao_social/<company>")
 def companies_razao_social(company):
@@ -140,4 +151,4 @@ def companies_endereco(logradouro):
     result = pd.concat([contain, df]).drop_duplicates().to_dict('records')
     return result
 
-#app.run(host="localhost", port=5001)
+app.run(host="localhost", port=5001)
