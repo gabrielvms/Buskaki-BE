@@ -83,7 +83,7 @@ def companies_bairro(bairro):
     return exact.to_dict('records')
 
 @app.route("/companies/bairro")
-def companies_bairro():
+def companies_bairroq():
     bairro = request.args.get('bairro')
     data = cache.get("companies")
     if data == None:
