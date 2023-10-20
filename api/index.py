@@ -81,7 +81,7 @@ def companies_bairro(bairro):
     df = pd.DataFrame.from_dict(data)
     
     exact = df[df["bairro"].str.strip() == bairro.upper().strip()]
-    return exact.to_dict('records')
+    return exact.head(1000).to_dict('records')
 
 @app.route("/companies/razao_social/<company>")
 def companies_razao_social(company):
