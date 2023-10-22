@@ -100,7 +100,7 @@ def companies_razao_social():
     contain = df[df["razao_social"].str.contains(str(company).upper())]
 
     df['precision'] = df['razao_social'].apply(lambda row: jaccard_similarity(row if row != None else "", company) + dice_coefficient(row if row != None else "", company))
-    df = df.sort_values('precision', ascending=False).head(1000)
+    df = df.sort_values('precision', ascending=False).head(1000).drop('precision', axis=1)
     df = df[~df['cnpj'].isin(contain['cnpj'])]
     result = pd.concat([contain, df]).drop_duplicates().to_dict('records')
     return result
